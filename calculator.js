@@ -36,8 +36,7 @@ const NUMBERS = [
 ];
 
 const OPERATORS = [
-    '/', '*', '-', 
-    '+', '.', ',',
+    '/', '*', '-', '+'
 ];
 
 const EQUAL = [
@@ -53,7 +52,7 @@ const SPECIAL = [
 ];
 
 const CLEAR_KEYS = [
-    'Escape', 'clear' 
+    'Escape', 'clear'
 ];
 
 const VALID_KEYS = NUMBERS.concat(
@@ -61,57 +60,62 @@ const VALID_KEYS = NUMBERS.concat(
     EQUAL, PERCENTAGE
 );
 
-let VALUES = [];
-let OPERATOR;
+let calculator = new Calculator;
+let resultArray = [];
 
-let dotEnabled = false
-let dotPressed = false;
+let operatorPressed = [false];
 
-function sendValueToScreen(value, result) {
-    if (NUMBERS.includes(value)) {
-        result.textContent += value;
-    } else if (OPERATORS.includes(value)) {
-        // VALUES.push(parseFloat(result.textContent));
-        OPERATOR = value;
-        // result.textContent += ` ${value} `;
-        // console.log(`values = ${VALUES}`);
-        // console.log(`operator = ${OPERATOR}`);
-        result.textContent += value;
+function parser(expression) {
+    return (expression.split(/([+\-*/])/g)).join(" ");
+}
+
+function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
+
+    // TODO refactor
+    if (value === "Backspace") {
+        resultArray.pop();
+        operatorPressed.pop();
+    } else {
+        if (NUMBERS.includes(value)) {
+            operatorPressed.push(false);
+            resultArray.push(value);
+        } else if (OPERATORS.includes(value) && !operatorPressed[operatorPressed.length - 1]) {
+            operatorPressed.push(!operatorPressed[operatorPressed.length - 1]);
+            resultArray.push(value);
+        } else if (OPERATORS.includes(value) && operatorPressed[operatorPressed.length - 1]) {
+            resultArray[resultArray.length - 1] = value;
+        }
     }
 
-    console.log(value);
-    // switch (value) {
-    //     case 'Escape':
-    //     case 'clear':
-    //         result.textContent = '';
-    //         break;
-    //     default:
-    //         result.textContent += value;
-    // }
-    // if (CLEAR_KEYS.includes(value)) {
-    //     result.textContent = '';
-    // } else {
-    //     result.textContent += value;
-    // }
+    // TODO refactor 
+    const aggregatedValue = parser(resultArray.join(""));
+
+    resultDisplayElement.textContent = aggregatedValue;
+
+    let calculationResult = calculator.operate(aggregatedValue);
+    if (!isNaN(calculationResult)) {
+        previewDisplayElement.textContent = calculationResult;
+    } else {
+        previewDisplayElement.textContent = '';
+    }
+    // console.log(calculationResult);
+
 }
 
 function main() {
     const buttons = document.querySelector(".buttons");
-    const result = document.querySelector(".result");
+    const resultDisplayElement = document.querySelector(".result");
+    const previewDisplayElement = document.querySelector(".preview");
 
     buttons.addEventListener("click", (event) => {
         let value = event.target.getAttribute("calc-value");
-        // console.log(typeof(value));
-        sendValueToScreen(value, result);
+        sendValueToScreen(value, resultDisplayElement, previewDisplayElement);
     });
 
     document.addEventListener("keyup", (event) => {
-        // console.log(event);
         let value = event.key;
         if (!VALID_KEYS.includes(value)) return;
-        // console.log(typeof(value));
-        // console.log(`code=${event.code} | key=${event.key}`);
-        sendValueToScreen(value, result);
+        sendValueToScreen(value, resultDisplayElement, previewDisplayElement);
     });
 }
 
