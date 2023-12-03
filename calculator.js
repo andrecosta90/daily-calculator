@@ -61,12 +61,22 @@ const VALID_KEYS = NUMBERS.concat(
 );
 
 let calculator = new Calculator;
-let resultArray = [];
 
+// calculator states
+let prevCalculationRes = NaN;
+let resultArray = [];
 let operatorPressed = [false];
 
 function parser(expression) {
     return (expression.split(/([+\-*/])/g)).join(" ");
+}
+
+function clear(resultDisplayElement, previewDisplayElement) {
+    resultArray = [];
+    operatorPressed = [false];
+    resultDisplayElement.textContent = '';
+    previewDisplayElement.textContent = '';
+
 }
 
 function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
@@ -75,6 +85,17 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
     if (value === "Backspace") {
         resultArray.pop();
         operatorPressed.pop();
+    } else if (CLEAR_KEYS.includes(value)) {
+        clear(resultDisplayElement, previewDisplayElement);
+    } else if (EQUAL.includes(value) && !isNaN(prevCalculationRes)) {
+        console.log(value);
+        [resultDisplayElement.textContent, previewDisplayElement.textContent] = [
+            previewDisplayElement.textContent, resultDisplayElement.textContent];
+
+        resultArray = resultDisplayElement.textContent.split("");
+        operatorPressed = [false];
+
+        // return;
     } else {
         if (NUMBERS.includes(value)) {
             operatorPressed.push(false);
@@ -93,12 +114,20 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
     resultDisplayElement.textContent = aggregatedValue;
 
     let calculationResult = calculator.operate(aggregatedValue);
+
+
     if (!isNaN(calculationResult)) {
         previewDisplayElement.textContent = calculationResult;
     } else {
         previewDisplayElement.textContent = '';
     }
-    // console.log(calculationResult);
+
+    prevCalculationRes = calculationResult;
+
+    // PROBLEM Fix parser => "- 4 + 1"
+    console.log(resultArray);
+    console.log(aggregatedValue);
+    console.log(calculationResult);
 
 }
 
