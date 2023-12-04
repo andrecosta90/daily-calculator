@@ -79,6 +79,21 @@ function clear(resultDisplayElement, previewDisplayElement) {
 
 }
 
+function handleInputValue(value) {
+    if (NUMBERS.includes(value)) {
+        operatorPressed.push(false);
+        resultArray.push(value);
+    } else if (resultArray.length > 0) {
+
+        if (OPERATORS.includes(value) && !operatorPressed[operatorPressed.length - 1]) {
+            operatorPressed.push(!operatorPressed[operatorPressed.length - 1]);
+            resultArray.push(value);
+        } else if (OPERATORS.includes(value) && operatorPressed[operatorPressed.length - 1]) {
+            resultArray[resultArray.length - 1] = value;
+        }
+    }
+}
+
 function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
 
     // TODO refactor
@@ -87,25 +102,21 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
         operatorPressed.pop();
     } else if (CLEAR_KEYS.includes(value)) {
         clear(resultDisplayElement, previewDisplayElement);
-    } else if (EQUAL.includes(value) && !isNaN(prevCalculationRes)) {
+    } else if ((EQUAL.concat(OPERATORS)).includes(value) && !isNaN(prevCalculationRes)) {
         console.log(value);
         [resultDisplayElement.textContent, previewDisplayElement.textContent] = [
             previewDisplayElement.textContent, resultDisplayElement.textContent];
 
         resultArray = resultDisplayElement.textContent.split("");
+
+        console.log("result arr =>" + resultArray);
         operatorPressed = [false];
+
+        handleInputValue(value);
 
         // return;
     } else {
-        if (NUMBERS.includes(value)) {
-            operatorPressed.push(false);
-            resultArray.push(value);
-        } else if (OPERATORS.includes(value) && !operatorPressed[operatorPressed.length - 1]) {
-            operatorPressed.push(!operatorPressed[operatorPressed.length - 1]);
-            resultArray.push(value);
-        } else if (OPERATORS.includes(value) && operatorPressed[operatorPressed.length - 1]) {
-            resultArray[resultArray.length - 1] = value;
-        }
+        handleInputValue(value);
     }
 
     // TODO refactor 
