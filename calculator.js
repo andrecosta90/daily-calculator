@@ -68,7 +68,7 @@ let resultArray = [];
 let operatorPressed = [false];
 
 function parser(expression) {
-    return (expression.split(/([+\-*/])/g)).join(" ");
+    return (expression.split(/([+*/]|\b\-)/g)).join(" ");
 }
 
 function clear(resultDisplayElement, previewDisplayElement) {
