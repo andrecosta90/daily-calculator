@@ -1,5 +1,65 @@
 const calculator = require('./calculator');
 
+
+describe('UI Tests', () => {
+  test('adds 5 + 1 to equal 6', () => {
+    const resultDisplayElement = {textContent : ''};
+    const previewDisplayElement = {textContent : ''};
+    const events = ['5', '+', '1'];
+    let ret;
+    for (evt of events) {
+      ret = calculator.sendValueToScreen(evt, resultDisplayElement, previewDisplayElement);
+    }
+    calculator.clear(resultDisplayElement, previewDisplayElement);
+    expect(
+      ret['calculationResult']
+    ).toBe(6);
+  });
+
+  test('adds 5 + 1 to equal 6 followed by Enter', () => {
+    const resultDisplayElement = {textContent : ''};
+    const previewDisplayElement = {textContent : ''};
+    const events = ['5', '+', '1', 'Enter'];
+    let ret;
+    for (evt of events) {
+      ret = calculator.sendValueToScreen(evt, resultDisplayElement, previewDisplayElement);
+    }
+    calculator.clear(resultDisplayElement, previewDisplayElement);
+    expect(
+      ret['aggregatedValue']
+    ).toBe(6);
+  });
+
+  test('12 + 7 - 5 * 3 = should yield 42', () => {
+    const resultDisplayElement = {textContent : ''};
+    const previewDisplayElement = {textContent : ''};
+    const events = ['1', '2', '+', '7', '-', '5', '*', '3'];
+    let ret;
+    for (evt of events) {
+      ret = calculator.sendValueToScreen(evt, resultDisplayElement, previewDisplayElement);
+    }
+    calculator.clear(resultDisplayElement, previewDisplayElement);
+    expect(
+      ret['calculationResult']
+    ).toBe(42);
+  });
+
+  test('12 + 7 - 5 * 3 Followed by Enter => should yield 42', () => {
+    const resultDisplayElement = {textContent : ''};
+    const previewDisplayElement = {textContent : ''};
+    const events = ['1', '2', '+', '7', '-', '5', '*', '3', 'Enter'];
+    let ret;
+    for (evt of events) {
+      ret = calculator.sendValueToScreen(evt, resultDisplayElement, previewDisplayElement);
+    }
+    calculator.clear(resultDisplayElement, previewDisplayElement);
+    expect(
+      ret['aggregatedValue']
+    ).toBe(42);
+  });
+
+});
+
 describe('addition operator', () => {
   // Test Case 1: Addition with positive numbers
   test('adds 7 + 8 to equal 15', () => {

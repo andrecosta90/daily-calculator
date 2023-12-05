@@ -109,7 +109,6 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
 
         resultArray = resultDisplayElement.textContent.split("");
 
-        console.log("result arr =>" + resultArray);
         operatorPressed = [false];
 
         handleInputValue(value);
@@ -124,7 +123,7 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
 
     resultDisplayElement.textContent = aggregatedValue;
 
-    let calculationResult = calculator.operate(aggregatedValue);
+    let calculationResult = (calculator.operate(aggregatedValue)).toString();
 
 
     if (!isNaN(calculationResult)) {
@@ -135,10 +134,10 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
 
     prevCalculationRes = calculationResult;
 
-    // PROBLEM Fix parser => "- 4 + 1"
-    console.log(resultArray);
-    console.log(aggregatedValue);
-    console.log(calculationResult);
+    return {
+        calculationResult : parseFloat(calculationResult), 
+        aggregatedValue : parseFloat(aggregatedValue)
+    };
 
 }
 
@@ -169,6 +168,7 @@ try {
 
     module.exports = {
         Calculator
+        , sendValueToScreen, clear
     };
 
 } catch (e) {
