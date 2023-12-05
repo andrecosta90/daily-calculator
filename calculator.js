@@ -135,8 +135,8 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
     prevCalculationRes = calculationResult;
 
     return {
-        calculationResult : parseFloat(calculationResult), 
-        aggregatedValue : parseFloat(aggregatedValue)
+        calculationResult: parseFloat(calculationResult),
+        aggregatedValue: parseFloat(aggregatedValue)
     };
 
 }
