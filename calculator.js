@@ -157,6 +157,12 @@ function main() {
         if (!VALID_KEYS.includes(value)) return;
         sendValueToScreen(value, resultDisplayElement, previewDisplayElement);
     });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "/") {
+            event.preventDefault();
+        }
+    });
 }
 
 try {
