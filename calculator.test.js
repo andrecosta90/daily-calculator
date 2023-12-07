@@ -125,7 +125,7 @@ describe('UI Tests', () => {
     const events = ['3', '.', '8', '-', '1', '.', '2', 'Enter'];
     let ret = runTest(events);
 
-    let diff = Math.abs(ret['aggregatedValue'] - 2.6)
+    let diff = Math.abs(ret['aggregatedValue'] - 2.6);
 
     expect(diff).toBeLessThan(0.001);
   });
@@ -158,7 +158,23 @@ describe('UI Tests', () => {
     const events = ['3', '-', '1', '.', '.', 'Backspace', 'Backspace', '3', '4', '.', '1', '2', '*', '2', '+', '5', '.', '5', 'Enter'];
     let ret = runTest(events);
 
-    let diff = Math.abs(ret['aggregatedValue'] - (-56.74))
+    let diff = Math.abs(ret['aggregatedValue'] - (-56.74));
+    expect(diff).toBeLessThan(0.001);
+  });
+
+  test('1.3 + 1.7 = 3', () => {
+    const events = ['1', '.', '3', '+', '1', '.', '6' , 'Enter', 'Backspace', 'Backspace', '.', '1', '+', '1', 'Enter'];
+    let ret = runTest(events);
+
+    let diff = Math.abs(ret['aggregatedValue'] - (3.1));
+    expect(diff).toBeLessThan(0.001);
+  });
+
+  test('1.3 + 1.7 = 3', () => {
+    const events = ['1', '.', '3', '+', '1', '.', '7' , 'Enter', '.', '1', '+', '1', 'Enter'];
+    let ret = runTest(events);
+
+    let diff = Math.abs(ret['aggregatedValue'] - (4.1));
     expect(diff).toBeLessThan(0.001);
   });
 

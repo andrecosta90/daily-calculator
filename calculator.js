@@ -139,6 +139,8 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
 
         if (resultArray.includes('.')) {
             dotPressed = true;
+        } else {
+            dotPressed = false;
         }
 
         handleInputValue(value);
