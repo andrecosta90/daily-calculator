@@ -47,17 +47,21 @@ const PERCENTAGE = [
     '%'
 ]
 
-const SPECIAL = [
-    '.', ',', 'Backspace'
+const BACKSPACE = [
+    'Backspace'
 ];
+
+const DOT = [
+    '.', ','
+]
 
 const CLEAR_KEYS = [
     'Escape', 'clear'
 ];
 
 const VALID_KEYS = NUMBERS.concat(
-    OPERATORS, SPECIAL, CLEAR_KEYS,
-    EQUAL, PERCENTAGE
+    OPERATORS, BACKSPACE, CLEAR_KEYS,
+    EQUAL, PERCENTAGE, DOT
 );
 
 let calculator = new Calculator;
@@ -66,6 +70,7 @@ let calculator = new Calculator;
 let prevCalculationRes = NaN;
 let resultArray = [];
 let operatorPressed = [false];
+let dotPressed = false;
 
 function parser(expression) {
     return (expression.split(/([+*/]|\b\-)/g)).join(" ");
@@ -76,40 +81,56 @@ function clear(resultDisplayElement, previewDisplayElement) {
     operatorPressed = [false];
     resultDisplayElement.textContent = '';
     previewDisplayElement.textContent = '';
+    dotPressed = false;
 
 }
 
 function handleInputValue(value) {
-    if (NUMBERS.includes(value)) {
+    if (NUMBERS.concat(DOT).includes(value)) {
         operatorPressed.push(false);
-        resultArray.push(value);
-    } else if (resultArray.length > 0) {
 
+        if (NUMBERS.includes(value) || (DOT.includes(value) && !dotPressed)) {
+            resultArray.push(value);
+        }
+
+        if (DOT.includes(value) && !dotPressed) {
+            dotPressed = !dotPressed;
+        }
+
+    } else if (resultArray.length > 0) {
+        
         if (OPERATORS.includes(value) && !operatorPressed[operatorPressed.length - 1]) {
+            dotPressed = false;
             operatorPressed.push(!operatorPressed[operatorPressed.length - 1]);
             resultArray.push(value);
         } else if (OPERATORS.includes(value) && operatorPressed[operatorPressed.length - 1]) {
+            dotPressed = false;
             resultArray[resultArray.length - 1] = value;
         }
     }
 }
 
 function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
-
     // TODO refactor
-    if (value === "Backspace") {
-        resultArray.pop();
+    if (BACKSPACE.includes(value)) {
+        let deletedValue = resultArray.pop();
+        if (OPERATORS.concat(DOT).includes(deletedValue)) {
+            dotPressed = !dotPressed;
+        }
         operatorPressed.pop();
     } else if (CLEAR_KEYS.includes(value)) {
         clear(resultDisplayElement, previewDisplayElement);
     } else if ((EQUAL.concat(OPERATORS)).includes(value) && !isNaN(prevCalculationRes)) {
-        console.log(value);
         [resultDisplayElement.textContent, previewDisplayElement.textContent] = [
             previewDisplayElement.textContent, resultDisplayElement.textContent];
 
         resultArray = resultDisplayElement.textContent.split("");
 
         operatorPressed = [false];
+
+        if (resultArray.includes('.')) {
+            dotPressed = true;
+        }
 
         handleInputValue(value);
 
@@ -154,6 +175,8 @@ function main() {
     document.addEventListener("keyup", (event) => {
         let value = event.key;
         if (!VALID_KEYS.includes(value)) return;
+
+        value = value === ',' ? '.' : value;
         sendValueToScreen(value, resultDisplayElement, previewDisplayElement);
     });
 

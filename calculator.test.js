@@ -54,7 +54,7 @@ describe('UI Tests', () => {
 
   test('adds 13 * 2 to equal 26', () => {
 
-    
+
     const events = ['1', '3', '*', '2'];
     let ret = runTest(events);
     expect(ret['calculationResult']).toBe(26);
@@ -111,6 +111,55 @@ describe('UI Tests', () => {
     const events = ['6', '-', '1', '0', 'Enter', '+', '-', '1'];
     let ret = runTest(events);
     expect(ret['calculationResult']).toBe(-5);
+  });
+
+  // Test 1: Addition of floating-point numbers
+  test('1.5 + 2.5 Enter => should yield 4', () => {
+    const events = ['1', '.', '5', '+', '2', '.', '5', 'Enter'];
+    let ret = runTest(events);
+    expect(ret['aggregatedValue']).toBe(4);
+  });
+
+  // Test 2: Subtraction of floating-point numbers
+  test('3.8 - 1.2 Enter => should yield 2.6', () => {
+    const events = ['3', '.', '8', '-', '1', '.', '2', 'Enter'];
+    let ret = runTest(events);
+
+    let diff = Math.abs(ret['aggregatedValue'] - 2.6)
+
+    expect(diff).toBeLessThan(0.001);
+  });
+
+  test('2.5 * 2 Enter => should yield 5', () => {
+    const events = ['2', '.', '5', '*', '2', 'Enter'];
+    let ret = runTest(events);
+    expect(ret['aggregatedValue']).toBe(5);
+  });
+
+  test('6.4 / 2 Enter => should yield 3.2', () => {
+    const events = ['6', '.', '4', '/', '2', 'Enter'];
+    let ret = runTest(events);
+    expect(ret['aggregatedValue']).toBe(3.2);
+  });
+
+  test('2 + 1.5 * 2 Enter => should yield 5', () => {
+    const events = ['2', '+', '1', '.', '5', '*', '2', 'Enter'];
+    let ret = runTest(events);
+    expect(ret['aggregatedValue']).toBe(7);
+  });
+
+  test('3 - 1.2 * 2 + 5.5 Enter => should yield 7.1', () => {
+    const events = ['3', '-', '1', '.', '2', '*', '2', '+', '5', '.', '5', 'Enter'];
+    let ret = runTest(events);
+    expect(ret['aggregatedValue']).toBe(9.1);
+  });
+
+  test('3 - 34.12 * 2 + 5.5 Enter => should yield -56.74', () => {
+    const events = ['3', '-', '1', '.', '.', 'Backspace', 'Backspace', '3', '4', '.', '1', '2', '*', '2', '+', '5', '.', '5', 'Enter'];
+    let ret = runTest(events);
+
+    let diff = Math.abs(ret['aggregatedValue'] - (-56.74))
+    expect(diff).toBeLessThan(0.001);
   });
 
 });
