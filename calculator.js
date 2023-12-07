@@ -98,7 +98,7 @@ function handleInputValue(value) {
         }
 
     } else if (resultArray.length > 0) {
-        
+
         if (OPERATORS.includes(value) && !operatorPressed[operatorPressed.length - 1]) {
             dotPressed = false;
             operatorPressed.push(!operatorPressed[operatorPressed.length - 1]);
@@ -108,6 +108,15 @@ function handleInputValue(value) {
             resultArray[resultArray.length - 1] = value;
         }
     }
+}
+
+function roundLongDecimals(value) {
+    return parseFloat(value.toFixed(12)).toString();
+}
+
+function sendErrorMessage(message, resultDisplayElement, previewDisplayElement) {
+    alert(message);
+    clear(resultDisplayElement, previewDisplayElement);
 }
 
 function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
@@ -144,8 +153,27 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
 
     resultDisplayElement.textContent = aggregatedValue;
 
-    let calculationResult = (calculator.operate(aggregatedValue)).toString();
+    let calculationResult = calculator.operate(aggregatedValue);
 
+    if (aggregatedValue.length > 13 || calculationResult.length > 13) {
+        sendErrorMessage(
+            "Can't enter more than 13 digits.",
+            resultDisplayElement,
+            previewDisplayElement
+        );
+        return;
+    }
+
+    if (aggregatedValue.includes('Infinity')) {
+        sendErrorMessage(
+            "Can't divide by zero.",
+            resultDisplayElement,
+            previewDisplayElement
+        );
+        return;
+    }
+
+    calculationResult = roundLongDecimals(calculationResult);
 
     if (!isNaN(calculationResult)) {
         previewDisplayElement.textContent = calculationResult;
