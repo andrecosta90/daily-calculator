@@ -12,6 +12,11 @@ html {
 body {
     display: flex;
     justify-content: center;
+    margin-top: 48px;
+}
+
+* {
+    border-radius: 24px;
 }
 
 .calculator {
@@ -68,6 +73,7 @@ button {
     flex: 1 1 20%;
     color: white;
     font-size: large;
+    /* border: 1px solid white; */
 }
 
 #btn-zero {
