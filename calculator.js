@@ -45,7 +45,11 @@ const EQUAL = [
 
 const PERCENTAGE = [
     '%'
-]
+];
+
+const SIGNAL = [
+    'signal'
+];
 
 const BACKSPACE = [
     'Backspace'
@@ -53,7 +57,7 @@ const BACKSPACE = [
 
 const DOT = [
     '.', ','
-]
+];
 
 const CLEAR_KEYS = [
     'Escape', 'clear'
@@ -106,6 +110,13 @@ function handleInputValue(value) {
         } else if (OPERATORS.includes(value) && operatorPressed[operatorPressed.length - 1]) {
             dotPressed = false;
             resultArray[resultArray.length - 1] = value;
+        }
+    }
+
+    if (SIGNAL.includes(value)) {
+        const lastElement = parseFloat(resultArray[resultArray.length - 1]);
+        if (!isNaN(lastElement)) {
+            resultArray[resultArray.length - 1] = -lastElement;
         }
     }
 }
