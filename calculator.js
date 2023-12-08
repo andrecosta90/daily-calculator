@@ -205,6 +205,11 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
         handleInputValue(value);
     }
 
+    if (resultArray[0] === '-') {
+        resultArray.shift();
+        resultArray[0] = -resultArray[0];
+    }
+
     // TODO refactor 
     const aggregatedValue = complexParser(resultArray.join("")).join(" ");
 
