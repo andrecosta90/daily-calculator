@@ -35,3 +35,8 @@ npm test calculator.test.js
 ```
 
 After executing this command, Jest will run the specified test file (`calculator.test.js` in this case) and print the test results.
+
+
+# Links
+
+[Try it right now!](https://andrecosta90.github.io/daily-calculator)

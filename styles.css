@@ -11,8 +11,15 @@ html {
 
 body {
     display: flex;
-    justify-content: center;
-    margin-top: 48px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
 * {
@@ -23,7 +30,7 @@ body {
     /* border: 2px solid red; */
     background-color: #5A5967;
     width: 330px;
-    height: 600px;
+    height: 580px;
     display: flex;
     flex-direction: column;
     padding: 32px;
@@ -38,7 +45,7 @@ p {
     background-color: #ADC9AE;
     flex: 1;
     display: flex;
-    
+
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-end;
@@ -46,15 +53,11 @@ p {
     padding-right: 16px;
     padding-bottom: 16px;
 
-    /* text-align: right; */
-    /* border: 2px solid red; */
-
 }
 
 .historic {
     font-size: 16px;
     color: #656573;
-    /* margin-bottom: auto; */
 }
 
 .result {
@@ -63,7 +66,6 @@ p {
 
 .buttons {
     flex: 2;
-    /* border: 2px solid red; */
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
@@ -73,7 +75,6 @@ button {
     flex: 1 1 20%;
     color: white;
     font-size: large;
-    /* border: 1px solid white; */
 }
 
 #btn-zero {
@@ -82,15 +83,20 @@ button {
 
 button.other {
     font-size: x-large;
-    background-color: #8185BC;   
+    background-color: #8185BC;
 }
 
 button.number {
     font-size: xx-large;
-    background-color: #757389;   
+    background-color: #757389;
 }
 
 button.operator {
     font-size: x-large;
     background-color: #D56F76;
+}
+
+.footer {
+    padding: 32px 256px;
+    font-weight: 100;
 }
