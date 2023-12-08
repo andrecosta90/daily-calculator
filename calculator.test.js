@@ -178,6 +178,19 @@ describe('UI Tests', () => {
     expect(diff).toBeLessThan(0.001);
   });
 
+
+  test('Percentage Test: 1000 + 10% = 1100', () => {
+    const events = ['1', '0', '0', '0', '+', '1', '0', '%', 'Enter'];
+    let ret = runTest(events);
+    expect(ret['aggregatedValue']).toBe(1100);
+  });
+
+  test('Percentage Test: 1000 - 4% = 960', () => {
+    const events = ['1', '0', '0', '0', '-', '', '4', '%', 'Enter'];
+    let ret = runTest(events);
+    expect(ret['aggregatedValue']).toBe(960);
+  });
+
 });
 
 describe('addition operator', () => {

@@ -75,9 +75,33 @@ let prevCalculationRes = NaN;
 let resultArray = [];
 let operatorPressed = [false];
 let dotPressed = false;
+let percentagePressed = false;
 
-function parser(expression) {
-    return (expression.split(/([+*/]|\b\-)/g)).join(" ");
+function simpleParser(expression) {
+    return (expression.split(/([+*/]|\b\-)/g));
+}
+
+function percentageToDecimal(value) {
+    return roundLongDecimals(parseFloat(value) / 100);
+}
+
+function complexParser(exp) {
+    let [a, op, b] = (simpleParser(exp)).map((item) => item.trim());
+
+    if (a.includes('%')) {
+        a = percentageToDecimal(a);
+    }
+
+    if (b !== undefined && b.includes('%')) {
+        if (['+', '-'].includes(op)) {
+            b = (calculator.operate(`1 ${op} ${percentageToDecimal(b)}`)).toString();
+            op = '*';
+        } else {
+            b = (percentageToDecimal(b)).toString();
+        }
+    }
+
+    return [a, op, b];
 }
 
 function clear(resultDisplayElement, previewDisplayElement) {
@@ -86,14 +110,21 @@ function clear(resultDisplayElement, previewDisplayElement) {
     resultDisplayElement.textContent = '';
     previewDisplayElement.textContent = '';
     dotPressed = false;
+    percentagePressed = false;
 
 }
 
 function handleInputValue(value) {
-    if (NUMBERS.concat(DOT).includes(value)) {
+    if (NUMBERS.concat(DOT, PERCENTAGE).includes(value)) {
         operatorPressed.push(false);
 
-        if (NUMBERS.includes(value) || (DOT.includes(value) && !dotPressed)) {
+        const lastElement = parseFloat(resultArray[resultArray.length-1]);
+
+        if (
+            NUMBERS.includes(value)
+            || (DOT.includes(value) && !dotPressed)
+            || (PERCENTAGE.includes(value) && !percentagePressed && !isNaN(lastElement))
+        ) {
             resultArray.push(value);
         }
 
@@ -101,22 +132,32 @@ function handleInputValue(value) {
             dotPressed = !dotPressed;
         }
 
+        if (PERCENTAGE.includes(value) && !percentagePressed && !isNaN(lastElement)) {
+            percentagePressed = !percentagePressed;
+        }
+
     } else if (resultArray.length > 0) {
 
         if (OPERATORS.includes(value) && !operatorPressed[operatorPressed.length - 1]) {
             dotPressed = false;
+            percentagePressed = false;
             operatorPressed.push(!operatorPressed[operatorPressed.length - 1]);
             resultArray.push(value);
         } else if (OPERATORS.includes(value) && operatorPressed[operatorPressed.length - 1]) {
             dotPressed = false;
+            percentagePressed = false;
             resultArray[resultArray.length - 1] = value;
         }
     }
 
     if (SIGNAL.includes(value)) {
-        const lastElement = parseFloat(resultArray[resultArray.length - 1]);
+
+        const lastElementIndex = resultArray.findIndex(
+            item => OPERATORS.includes(item)) + 1;
+        const lastElement = parseFloat(resultArray[lastElementIndex]);
+
         if (!isNaN(lastElement)) {
-            resultArray[resultArray.length - 1] = -lastElement;
+            resultArray[lastElementIndex] = (-lastElement).toString();
         }
     }
 }
@@ -134,8 +175,13 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
     // TODO refactor
     if (BACKSPACE.includes(value)) {
         let deletedValue = resultArray.pop();
+
         if (OPERATORS.concat(DOT).includes(deletedValue)) {
             dotPressed = !dotPressed;
+        }
+
+        if (OPERATORS.concat(PERCENTAGE).includes(deletedValue)) {
+            percentagePressed = !percentagePressed;
         }
         operatorPressed.pop();
     } else if (CLEAR_KEYS.includes(value)) {
@@ -148,11 +194,9 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
 
         operatorPressed = [false];
 
-        if (resultArray.includes('.')) {
-            dotPressed = true;
-        } else {
-            dotPressed = false;
-        }
+        //REFACTOR : DRY
+        dotPressed = resultArray.includes('.') ? true : false;
+        percentagePressed = resultArray.includes('%') ? true : false;
 
         handleInputValue(value);
 
@@ -162,7 +206,7 @@ function sendValueToScreen(value, resultDisplayElement, previewDisplayElement) {
     }
 
     // TODO refactor 
-    const aggregatedValue = parser(resultArray.join(""));
+    const aggregatedValue = complexParser(resultArray.join("")).join(" ");
 
     resultDisplayElement.textContent = aggregatedValue;
 
